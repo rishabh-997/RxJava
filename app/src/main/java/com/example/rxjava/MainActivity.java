@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textView;
     SeekBar seekBar;
+    CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSubscribe(Disposable d) {
                 Log.i("Main Activity", "SubscribedOn Called");
+                disposables.add(d);
             }
 
             @Override
@@ -74,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Main Activity", "Subscribed completed");
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
     }
 }
 
